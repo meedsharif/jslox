@@ -1,0 +1,11 @@
+if (hello > 20 and test < 30) {
+  print "Hello";
+}
+
+
+// Hello there
+fun sayHello(n) {
+  print "Hello " + n;
+}
+
+sayHello("Tahmid")
