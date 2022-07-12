@@ -1,12 +1,24 @@
 import fs from "fs/promises";
 import readline from "readline";
+import AstPrinter from "./astPrinter";
+import { Expr } from "./expr";
+import Interpreter from "./interpreter";
+import Parser from "./parser";
 import Scanner from "./scanner";
 
+const interpreter = new Interpreter();
 function run(content: string) {
   const scanner = new Scanner(content);
   const tokens = scanner.scanTokens();
+  const parser = new Parser(tokens);
+  const expressions = parser.parse();
 
-  console.log(tokens);
+  if (hadError) return;
+  if(expressions instanceof Expr) {
+    console.log(new AstPrinter().print(expressions));
+    // console.log({ expressions })
+    interpreter.interpret(expressions);
+  }
 }
 
 async function runFile(filename: string) {
@@ -15,6 +27,7 @@ async function runFile(filename: string) {
   if (hadError) {
     process.exit(65);
   }
+  if(hadRuntimeError) process.exit(70)
 }
 
 function runPrompt() {
@@ -24,7 +37,7 @@ function runPrompt() {
     output: process.stdout,
   });
 
-  rl.question("> ", (source) => {
+  rl.question(">>> ", (source) => {
     run(source);
     rl.close();
     if (source !== "exit()") {
@@ -45,4 +58,5 @@ function main() {
 }
 
 let hadError = false;
+let hadRuntimeError = false;
 main();

@@ -47,7 +47,7 @@ class Scanner {
     }
 
     this.tokens.push({
-      type: TokenType[TokenType.EOF],
+      type: TokenType.EOF,
       lexeme: "",
       literal: null,
       line: this.line,
@@ -243,7 +243,7 @@ class Scanner {
   ): void {
     const text = this.source.substring(this.start, this.current);
     this.tokens.push({
-      type: TokenType[type],
+      type: type,
       lexeme: text,
       literal,
       line: this.line,

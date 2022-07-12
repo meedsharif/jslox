@@ -2,7 +2,7 @@
 
 import { Token } from './token';
 class Expr {
-  accept (visitor: any) {}
+  accept (visitor: any): any {}
 }
 
 class Assign extends Expr {

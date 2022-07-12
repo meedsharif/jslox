@@ -71,7 +71,7 @@ function defineType (writer: fs.WriteStream, baseName: string, className: string
   writer.write(`${indent}}\n\n`)
 
   writer.write(`${indent}accept (visitor: any) {\n`)
-  writer.write(`${indent}${indent}return visitor.visit${className}${baseName}(this)\n`)
+  writer.write(`${indent}${indent}return visitor.visiting${className}${baseName}(this)\n`)
   writer.write(`${indent}}\n`)
 
   writer.write(`}\n`)

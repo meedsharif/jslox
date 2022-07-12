@@ -38,20 +38,20 @@ class AstPrinter {
         return builder.toString();
     }
 
-    constructor() {
-      const expression: Expr = new Binary(
-        new Unary(
-          { lexeme: "-", line: 1, type: TokenType.MINUS, literal: null },
-          new Literal(123)
-        ),
-        { lexeme: "*", line: 1, type: TokenType.STAR, literal: null },
-        new Grouping(
-          new Literal(45.67)
-        )
-      );
+    // constructor() {
+    //   const expression: Expr = new Binary(
+    //     new Unary(
+    //       { lexeme: "-", line: 1, type: TokenType.MINUS, literal: null },
+    //       new Literal(123)
+    //     ),
+    //     { lexeme: "*", line: 1, type: TokenType.STAR, literal: null },
+    //     new Grouping(
+    //       new Literal(45.67)
+    //     )
+    //   );
 
-      console.log(this.print(expression));
-    }
+    //   console.log(this.print(expression));
+    // }
 }
 
-const printer = new AstPrinter();
+export default AstPrinter;
