@@ -15,7 +15,7 @@ class Assign extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingAssignExpr(this)
+    return visitor.visitAssignExpr(this)
   }
 }
 
@@ -31,7 +31,7 @@ class Binary extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingBinaryExpr(this)
+    return visitor.visitBinaryExpr(this)
   }
 }
 
@@ -47,7 +47,7 @@ class Call extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingCallExpr(this)
+    return visitor.visitCallExpr(this)
   }
 }
 
@@ -59,7 +59,7 @@ class Grouping extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingGroupingExpr(this)
+    return visitor.visitGroupingExpr(this)
   }
 }
 
@@ -71,7 +71,7 @@ class Literal extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingLiteralExpr(this)
+    return visitor.visitLiteralExpr(this)
   }
 }
 
@@ -87,7 +87,7 @@ class Logical extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingLogicalExpr(this)
+    return visitor.visitLogicalExpr(this)
   }
 }
 
@@ -101,7 +101,7 @@ class Unary extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingUnaryExpr(this)
+    return visitor.visitUnaryExpr(this)
   }
 }
 
@@ -113,7 +113,7 @@ class Variable extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitingVariableExpr(this)
+    return visitor.visitVariableExpr(this)
   }
 }
 

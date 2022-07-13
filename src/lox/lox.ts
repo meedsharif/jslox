@@ -69,14 +69,11 @@ class Lox {
     const scanner = new Scanner(content);
     const tokens = scanner.scanTokens();
     const parser = new Parser(tokens);
-    const expressions = parser.parse();
+    const statements = parser.parse();
 
     if (hadError) return;
-    if(expressions instanceof Expr) {
-      console.log(new AstPrinter().print(expressions));
-      // console.log({ expressions })
-      interpreter.interpret(expressions);
-    }
+
+    interpreter.interpret(statements);
   }
 }
 

@@ -1,15 +1,17 @@
 import { Binary, Expr, Grouping, Literal, Unary } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
+import { Expression, Print, Stmt } from './stmt';
 import { Token } from './token';
 import TokenType from './tokenType';
 
 class Interpreter {
 
-  interpret(expression: Expr) {
+  interpret(statements: Stmt[]) {
     try {
-      let value = this.evaluate(expression);
-      console.log(value);
+      for (let statement of statements) {
+        this.execute(statement);
+      }
     } catch (error) {
       console.log(error);
       if(error instanceof RuntimeError) {
@@ -80,6 +82,19 @@ class Interpreter {
 
   private evaluate(expr: Expr): any {
     return expr.accept(this);
+  }
+
+  private execute(stmt: Stmt) {
+    stmt.accept(this);
+  }
+
+  visitExpressionStmt(stmt: Expression) {
+    this.evaluate(stmt.expression);
+  }
+
+  visitPrintStmt(stmt: Print) {
+    let value = this.evaluate(stmt.expression);
+    console.log(value);
   }
 
   visitBinaryExpr(expr: Binary): Object | null {
