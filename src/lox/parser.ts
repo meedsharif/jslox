@@ -1,5 +1,5 @@
-import { error } from "./error";
 import { Binary, Expr, Grouping, Literal, Unary } from "./expr";
+import Lox from "./lox";
 import { Token } from "./token";
 import TokenType from "./tokenType";
 
@@ -107,7 +107,7 @@ class Parser {
       return new Grouping(expr);
     }
 
-    throw error(this.peek(), "Expected expression.");
+    throw Lox.error(this.peek(), "Expected expression.");
     
   }
 
@@ -120,7 +120,7 @@ class Parser {
   }
 
   private error(token: Token, message: string) {
-    error(token, message);
+    Lox.error(token, message);
     return new ParseError();
   }
 

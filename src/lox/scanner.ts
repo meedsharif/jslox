@@ -1,4 +1,4 @@
-import * as jslox from "./error";
+import Lox from "./lox";
 import { Token } from "./token";
 import TokenType from "./tokenType";
 
@@ -147,7 +147,7 @@ class Scanner {
         } else if (this.isAlpha(c)) {
           this.identifier();
         } else {
-          jslox.error(this.line, `Unexpected character ${c}`);
+          Lox.error(this.line, `Unexpected character ${c}`);
         }
 
         break;
@@ -202,7 +202,7 @@ class Scanner {
     }
 
     if (this.isAtEnd()) {
-      jslox.error(this.line, "Unterminated string.");
+      Lox.error(this.line, "Unterminated string.");
       return;
     }
 

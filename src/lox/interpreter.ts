@@ -1,5 +1,5 @@
-import { runtimeError } from './error';
 import { Binary, Expr, Grouping, Literal, Unary } from './expr';
+import Lox from './lox';
 import RuntimeError from './runtimeError';
 import { Token } from './token';
 import TokenType from './tokenType';
@@ -13,7 +13,7 @@ class Interpreter {
     } catch (error) {
       console.log(error);
       if(error instanceof RuntimeError) {
-        runtimeError(error);
+        Lox.runtimeError(error);
       }
     }
   }
