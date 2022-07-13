@@ -2,7 +2,7 @@
 
 import { Token } from './token';
 class Expr {
-  accept (visitor: any): any {}
+  accept (visitor: any) {}
 }
 
 class Assign extends Expr {
@@ -15,7 +15,7 @@ class Assign extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitAssignExpr(this)
+    return visitor.visitingAssignExpr(this)
   }
 }
 
@@ -31,7 +31,7 @@ class Binary extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitBinaryExpr(this)
+    return visitor.visitingBinaryExpr(this)
   }
 }
 
@@ -47,7 +47,7 @@ class Call extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitCallExpr(this)
+    return visitor.visitingCallExpr(this)
   }
 }
 
@@ -59,7 +59,7 @@ class Grouping extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitGroupingExpr(this)
+    return visitor.visitingGroupingExpr(this)
   }
 }
 
@@ -71,7 +71,7 @@ class Literal extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitLiteralExpr(this)
+    return visitor.visitingLiteralExpr(this)
   }
 }
 
@@ -87,7 +87,7 @@ class Logical extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitLogicalExpr(this)
+    return visitor.visitingLogicalExpr(this)
   }
 }
 
@@ -101,7 +101,7 @@ class Unary extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitUnaryExpr(this)
+    return visitor.visitingUnaryExpr(this)
   }
 }
 
@@ -113,7 +113,7 @@ class Variable extends Expr {
   }
 
   accept (visitor: any) {
-    return visitor.visitVariableExpr(this)
+    return visitor.visitingVariableExpr(this)
   }
 }
 
