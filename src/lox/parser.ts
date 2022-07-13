@@ -1,6 +1,6 @@
-import { Binary, Expr, Grouping, Literal, Unary } from "./expr";
+import { Binary, Expr, Grouping, Literal, Unary, Variable } from "./expr";
 import Lox from "./lox";
-import { Expression, Print, Stmt } from "./stmt";
+import { Expression, Print, Stmt, Var } from "./stmt";
 import { Token } from "./token";
 import TokenType from "./tokenType";
 
@@ -17,11 +17,11 @@ class Parser {
     this.tokens = tokens;
   }
 
-  public parse(): Stmt[] {
-    let statements = new Array<Stmt>();
+  public parse(): any[] {
+    let statements = new Array<any>();
 
     while(!this.isAtEnd()) {
-      statements.push(this.statement());
+      statements.push(this.declaration());
     }
 
     return statements;
@@ -41,6 +41,20 @@ class Parser {
     return new Print(value);
   }
 
+  private varDeclaration(): Stmt | void {
+    let name = this.consume(TokenType.IDENTIFIER, "Expect variable name.");
+    let initializer;
+
+    if(this.match(TokenType.EQUAL)) {
+      initializer = this.expression();
+    }
+
+    this.consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+    if(initializer instanceof Expr) {
+      return new Var(name, initializer);
+    }
+  }
+
   private expressionStatement(): Stmt {
     let expr = this.expression();
     this.consume(TokenType.SEMICOLON, "Expect ';' after expression.");
@@ -49,6 +63,20 @@ class Parser {
 
   private expression(): Expr {
     return this.equality();
+  }
+
+  private declaration(): Stmt | void {
+      try {
+        if (this.match(TokenType.VAR)) {
+          return this.varDeclaration();
+        }
+
+        return this.statement();
+      } catch (e) {
+        if(e instanceof ParseError) {
+          this.synchronize();
+        }
+      }
   }
 
   private equality(): Expr {
@@ -118,6 +146,10 @@ class Parser {
 
     if(this.match(TokenType.NUMBER, TokenType.STRING)) {
       return new Literal(this.previous().literal);
+    }
+
+    if(this.match(TokenType.IDENTIFIER)) {
+      return new Variable(this.previous());
     }
 
     if(this.match(TokenType.LEFT_PAREN)) {

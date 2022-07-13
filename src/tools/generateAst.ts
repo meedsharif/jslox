@@ -105,6 +105,7 @@ async function main() {
   defineAst(outputDir, 'Stmt', {
     "Expression": "Expr expression",
     "Print": "Expr expression",
+    "Var": "Token name, Expr initializer",
   })
 }
 

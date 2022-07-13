@@ -1,11 +1,14 @@
-import { Binary, Expr, Grouping, Literal, Unary } from './expr';
+import Environment from './environment';
+import { Binary, Expr, Grouping, Literal, Unary, Variable } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
-import { Expression, Print, Stmt } from './stmt';
+import { Expression, Print, Stmt, Var } from './stmt';
 import { Token } from './token';
 import TokenType from './tokenType';
 
 class Interpreter {
+
+  private environment = new Environment();
 
   interpret(statements: Stmt[]) {
     try {
@@ -13,7 +16,6 @@ class Interpreter {
         this.execute(statement);
       }
     } catch (error) {
-      console.log(error);
       if(error instanceof RuntimeError) {
         Lox.runtimeError(error);
       }
@@ -36,6 +38,10 @@ class Interpreter {
     }
 
     return null;
+  }
+
+  visitVariableExpr(expr: Variable) {
+    return this.environment.get(expr.name);
   }
 
   private checkNumberOperand(operator: Token, operand: any): void {
@@ -95,6 +101,18 @@ class Interpreter {
   visitPrintStmt(stmt: Print) {
     let value = this.evaluate(stmt.expression);
     console.log(value);
+  }
+
+  visitVarStmt(stmt: Var) {
+    let value = null;
+
+    if (stmt.initializer !== null) {
+      value = this.evaluate(stmt.initializer);
+    }
+
+    this.environment.define(stmt.name.lexeme, value);
+
+    return null;
   }
 
   visitBinaryExpr(expr: Binary): Object | null {

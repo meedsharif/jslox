@@ -30,8 +30,23 @@ class Print extends Stmt {
   }
 }
 
+class Var extends Stmt {
+  public name: Token;
+  public initializer: Expr;
+  constructor (name: Token, initializer: Expr) {
+    super()
+    this.name = name;
+    this.initializer = initializer;
+  }
+
+  accept (visitor: any) {
+    return visitor.visitVarStmt(this)
+  }
+}
+
 export {
   Expression,
   Print,
+  Var,
   Stmt
 }
