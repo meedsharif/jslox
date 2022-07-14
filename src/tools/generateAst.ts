@@ -7,6 +7,7 @@ const mapTypes: Record<string, string> = {
   Expr: `Expr`,
   Stmt: `Stmt`,
   'List<Expr>': `Expr[]`,
+  'List<Stmt>': `Stmt[]`,
   Object: 'any',
 }
 
@@ -90,7 +91,7 @@ async function main() {
   // }
 
   const outputDir = "lox";
-
+  // Make sure to update the params mappers when you add a new one
   defineAst(outputDir, 'Expr', {
     Assign: 'Token name, Expr value',
     Binary: 'Expr left, Token operator, Expr right',
@@ -103,9 +104,10 @@ async function main() {
   })
 
   defineAst(outputDir, 'Stmt', {
-    "Expression": "Expr expression",
-    "Print": "Expr expression",
-    "Var": "Token name, Expr initializer",
+    Block: 'List<Stmt> statements',
+    Expression: "Expr expression",
+    Print: "Expr expression",
+    Var: "Token name, Expr initializer",
   })
 }
 

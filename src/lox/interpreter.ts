@@ -2,7 +2,7 @@ import Environment from './environment';
 import { Assign, Binary, Expr, Grouping, Literal, Unary, Variable } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
-import { Expression, Print, Stmt, Var } from './stmt';
+import { Block, Expression, Print, Stmt, Var } from './stmt';
 import { Token } from './token';
 import TokenType from './tokenType';
 
@@ -100,6 +100,24 @@ class Interpreter {
 
   private execute(stmt: Stmt) {
     stmt.accept(this);
+  }
+
+  private executeBlock(statements: Stmt[], environment: Environment) {
+    let previous = this.environment;
+
+    try {
+      this.environment = environment;
+
+      for(let statement of statements) {
+        this.execute(statement);
+      }
+    } finally {
+      this.environment = previous;
+    }
+  }
+
+  visitBlockStmt(stmt: Block) {
+    this.executeBlock(stmt.statements, new Environment(this.environment));
   }
 
   visitExpressionStmt(stmt: Expression) {

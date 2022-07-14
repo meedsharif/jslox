@@ -6,6 +6,18 @@ class Stmt {
   accept (visitor: any) {}
 }
 
+class Block extends Stmt {
+  public statements: Stmt[];
+  constructor (statements: Stmt[]) {
+    super()
+    this.statements = statements;
+  }
+
+  accept (visitor: any) {
+    return visitor.visitBlockStmt(this)
+  }
+}
+
 class Expression extends Stmt {
   public expression: Expr;
   constructor (expression: Expr) {
@@ -45,6 +57,7 @@ class Var extends Stmt {
 }
 
 export {
+  Block,
   Expression,
   Print,
   Var,
