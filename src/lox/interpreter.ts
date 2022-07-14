@@ -1,5 +1,5 @@
 import Environment from './environment';
-import { Binary, Expr, Grouping, Literal, Unary, Variable } from './expr';
+import { Assign, Binary, Expr, Grouping, Literal, Unary, Variable } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
 import { Expression, Print, Stmt, Var } from './stmt';
@@ -42,6 +42,14 @@ class Interpreter {
 
   visitVariableExpr(expr: Variable) {
     return this.environment.get(expr.name);
+  }
+
+  visitAssignExpr(expr: Assign) {
+    let value = this.evaluate(expr.value);
+
+    this.environment.assign(expr.name, value);
+    
+    return value;
   }
 
   private checkNumberOperand(operator: Token, operand: any): void {
