@@ -188,7 +188,7 @@ class Parser {
       return new Grouping(expr);
     }
 
-    throw Lox.error(this.peek(), "Expected expression.");
+    throw this.error(this.peek(), "Expected expression.");
     
   }
 
