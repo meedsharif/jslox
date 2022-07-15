@@ -2,7 +2,7 @@ import Environment from './environment';
 import { Assign, Binary, Expr, Grouping, Literal, Logical, Unary, Variable } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
-import { Block, Expression, If, Print, Stmt, Var } from './stmt';
+import { Block, Expression, If, Print, Stmt, Var, While } from './stmt';
 import { Token } from './token';
 import TokenType from './tokenType';
 
@@ -159,6 +159,12 @@ class Interpreter {
     this.environment.define(stmt.name.lexeme, value);
 
     return null;
+  }
+
+  visitWhileStmt(stmt: While) {
+    while(this.isTruthy(this.evaluate(stmt.condition))) {
+      this.execute(stmt.body);
+    }
   }
 
   visitBinaryExpr(expr: Binary): Object | null {
