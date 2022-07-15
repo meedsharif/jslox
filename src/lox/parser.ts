@@ -1,6 +1,6 @@
 import { Assign, Binary, Expr, Grouping, Literal, Unary, Variable } from "./expr";
 import Lox from "./lox";
-import { Block, Expression, Print, Stmt, Var } from "./stmt";
+import { Block, Expression, If, Print, Stmt, Var } from "./stmt";
 import { Token } from "./token";
 import TokenType from "./tokenType";
 
@@ -28,6 +28,10 @@ class Parser {
   }
 
   private statement(): Stmt {
+    if(this.match(TokenType.IF)) {
+      return this.ifStatement();
+    }
+
     if(this.match(TokenType.PRINT)) {
       return this.printStatement();
     }
@@ -37,6 +41,19 @@ class Parser {
     }
 
     return this.expressionStatement();
+  }
+
+  private ifStatement(): Stmt {
+    this.consume(TokenType.LEFT_PAREN, "Expect '(' after 'if' statement. ");
+    let condition = this.expression();
+    this.consume(TokenType.RIGHT_PAREN, "Expect ')' after condition.");
+    let thenBranch = this.statement();
+    let elseBranch: Stmt | void;
+    if(this.match(TokenType.ELSE)) {
+      elseBranch = this.statement();
+    }
+
+    return new If(condition, thenBranch, elseBranch!);
   }
 
   private printStatement(): Stmt {

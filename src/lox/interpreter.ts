@@ -2,7 +2,7 @@ import Environment from './environment';
 import { Assign, Binary, Expr, Grouping, Literal, Unary, Variable } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
-import { Block, Expression, Print, Stmt, Var } from './stmt';
+import { Block, Expression, If, Print, Stmt, Var } from './stmt';
 import { Token } from './token';
 import TokenType from './tokenType';
 
@@ -122,6 +122,14 @@ class Interpreter {
 
   visitExpressionStmt(stmt: Expression) {
     this.evaluate(stmt.expression);
+  }
+
+  visitIfStmt(stmt: If) {
+    if(this.isTruthy(this.evaluate(stmt.condition))) {
+      this.execute(stmt.thenBranch);
+    } else if (stmt.elseBranch) {
+      this.execute(stmt.elseBranch);
+    }
   }
 
   visitPrintStmt(stmt: Print) {

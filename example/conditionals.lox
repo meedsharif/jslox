@@ -1,0 +1,6 @@
+var canDrive = false;
+if (canDrive) {
+    print "You can drive";
+} else {
+    print "You can't drive";
+}
