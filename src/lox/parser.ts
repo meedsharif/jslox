@@ -28,6 +28,10 @@ class Parser {
   }
 
   private statement(): Stmt {
+    if(this.match(TokenType.FOR)) {
+      return this.forStatement();
+    }
+
     if(this.match(TokenType.IF)) {
       return this.ifStatement();
     }
@@ -45,6 +49,50 @@ class Parser {
     }
 
     return this.expressionStatement();
+  }
+
+  private forStatement(): Stmt {
+    this.consume(TokenType.LEFT_PAREN, "Expect '(' after 'for' statement.");
+   
+    let initializer: Stmt | void;
+    if(this.match(TokenType.SEMICOLON)) {
+      
+    } else if (this.match(TokenType.VAR)) {
+      initializer = this.varDeclaration();
+    } else {
+      initializer = this.expressionStatement();
+    }
+
+    let condition: Expr | void;
+    if(!this.check(TokenType.SEMICOLON)) {
+      condition = this.expression();
+    }
+
+    this.consume(TokenType.SEMICOLON, "Expect ';' after loop condition.");
+
+    let increment: Expr | void;
+    if(!this.check(TokenType.RIGHT_PAREN)) {
+      increment = this.expression();
+    }
+
+    this.consume(TokenType.RIGHT_PAREN, "Expect ')' after for clauses.");
+    let body = this.statement();
+
+    if(increment) {
+      body = new Block([body, new Expression(increment)]);
+    }
+
+    if(!condition) {
+      condition = new Literal(true);
+    }
+
+    body = new While(condition, body);
+
+    if(initializer) {
+      body = new Block([initializer, body]);
+    }
+
+    return body;
   }
 
   private ifStatement(): Stmt {
