@@ -1,5 +1,5 @@
 import Environment from './environment';
-import { Assign, Binary, Expr, Grouping, Literal, Unary, Variable } from './expr';
+import { Assign, Binary, Expr, Grouping, Literal, Logical, Unary, Variable } from './expr';
 import Lox from './lox';
 import RuntimeError from './runtimeError';
 import { Block, Expression, If, Print, Stmt, Var } from './stmt';
@@ -24,6 +24,18 @@ class Interpreter {
 
   visitLiteralExpr(expr: Literal): Object {
     return expr.value;
+  }
+
+  visitLogicalExpr(expr: Logical) {
+    let left = this.evaluate(expr.left);
+
+    if(expr.operator.type === TokenType.OR) {
+      if(this.isTruthy(left)) return left;
+    } else {
+      if(!this.isTruthy(left)) return left;
+    }
+
+    return this.evaluate(expr.right);
   }
 
   visitUnaryExpr(expr: Unary): Object | null {

@@ -1,4 +1,4 @@
-import { Assign, Binary, Expr, Grouping, Literal, Unary, Variable } from "./expr";
+import { Assign, Binary, Expr, Grouping, Literal, Logical, Unary, Variable } from "./expr";
 import Lox from "./lox";
 import { Block, Expression, If, Print, Stmt, Var } from "./stmt";
 import { Token } from "./token";
@@ -94,7 +94,7 @@ class Parser {
   }
 
   private assignment(): Expr {
-    let expr = this.equality();
+    let expr = this.or();
 
     if(this.match(TokenType.EQUAL)) {
       let equals = this.previous();
@@ -103,6 +103,30 @@ class Parser {
         return new Assign(expr.name, value);
       }
       this.error(equals, "Invalid assignment target.");
+    }
+
+    return expr;
+  }
+
+  private or(): Expr {
+    let expr = this.and();
+
+    while(this.match(TokenType.OR)) {
+      let operator = this.previous();
+      let right = this.and();
+      expr = new Logical(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  private and(): Expr {
+    let expr = this.equality();
+
+    while(this.match(TokenType.AND)) {
+      let operator = this.previous();
+      let right = this.equality();
+      expr = new Logical(expr, operator, right);
     }
 
     return expr;
