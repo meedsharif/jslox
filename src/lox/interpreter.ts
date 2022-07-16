@@ -1,6 +1,7 @@
 import Environment from './environment';
-import { Assign, Binary, Expr, Grouping, Literal, Logical, Unary, Variable } from './expr';
+import { Assign, Binary, Call, Expr, Grouping, Literal, Logical, Unary, Variable } from './expr';
 import Lox from './lox';
+import LoxCallable from './loxCallable';
 import RuntimeError from './runtimeError';
 import { Block, Expression, If, Print, Stmt, Var, While } from './stmt';
 import { Token } from './token';
@@ -210,6 +211,23 @@ class Interpreter {
     }
 
     return null;
+  }
+
+  visitCallExpr(expr: Call): any {
+    let callee = this.evaluate(expr.callee);
+    let args = expr.args.map(arg => this.evaluate(arg));
+
+    if(typeof callee !== "function") {
+      throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+    }
+
+    let func: LoxCallable = callee;
+
+    if(args.length !== func.arity()) {
+      throw new RuntimeError(expr.paren, `Expected ${func.arity()} arguments but got ${args.length}`);
+    }
+
+    return func.call(this, args);
   }
 }
 

@@ -1,4 +1,4 @@
-import { Assign, Binary, Expr, Grouping, Literal, Logical, Unary, Variable } from "./expr";
+import { Assign, Binary, Call, Expr, Grouping, Literal, Logical, Unary, Variable } from "./expr";
 import Lox from "./lox";
 import { Block, Expression, If, Print, Stmt, Var, While } from "./stmt";
 import { Token } from "./token";
@@ -266,7 +266,40 @@ class Parser {
       return new Unary(operator, right);
     }
 
-    return this.primary();
+    return this.call();
+  }
+
+  private finishCall(calle: Expr): Expr {
+    let args: Expr[] = [];
+
+    if(!this.check(TokenType.RIGHT_PAREN)) {
+      do {
+
+        if(args.length >= 255) {
+          this.error(this.peek(), "Cannot have more than 255 arguments.");
+        }
+
+        args.push(this.expression());
+      } while(this.match(TokenType.COMMA))
+    }
+
+    const paren = this.consume(TokenType.RIGHT_PAREN, "Expect ')' after arguments.");
+
+    return new Call(calle, paren, args);
+  }
+
+  private call(): Expr {
+    let expr = this.primary();
+
+    while(true) {
+      if(this.match(TokenType.LEFT_PAREN)) {
+        expr = this.finishCall(expr);
+      } else {
+        break;
+      }
+    }
+
+    return expr;
   }
 
   private primary(): Expr {
