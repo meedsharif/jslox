@@ -9,7 +9,12 @@ import TokenType from './tokenType';
 
 class Interpreter {
 
-  private environment = new Environment();
+  private globals = new Environment();
+  private environment = this.globals;
+
+  constructor() {
+    this.globals.define("clock", new Callable(0, () => { return Date.now(); }));
+  }
 
   interpret(statements: Stmt[]) {
     try {
@@ -229,6 +234,24 @@ class Interpreter {
 
     return func.call(this, args);
   }
+}
+
+class Callable implements LoxCallable {
+  private fn;
+  private _arity: number;
+  constructor(arity: any, fn: Function)  {
+    this._arity = arity;
+    this.fn = fn;
+  }
+
+  arity(): number {
+    return this._arity;
+  }
+
+  call(interpreter: Interpreter, args: any[]): any {
+    return this.fn.apply(null, args);
+  }
+
 }
 
 export default Interpreter;

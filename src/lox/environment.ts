@@ -1,7 +1,7 @@
 import RuntimeError from "./runtimeError";
 import { Token } from "./token";
 
-type value = string | number | boolean | null;
+type value = string | number | boolean | null | any;
 
 class Environment {
   enclosing: Environment | null;
