@@ -2,14 +2,15 @@ import Environment from './environment';
 import { Assign, Binary, Call, Expr, Grouping, Literal, Logical, Unary, Variable } from './expr';
 import Lox from './lox';
 import LoxCallable from './loxCallable';
+import LoxFunction from './LoxFunction';
 import RuntimeError from './runtimeError';
-import { Block, Expression, If, Print, Stmt, Var, While } from './stmt';
+import { Block, Expression, Function, If, Print, Stmt, Var, While } from './stmt';
 import { Token } from './token';
 import TokenType from './tokenType';
 
 class Interpreter {
 
-  private globals = new Environment();
+  globals = new Environment();
   private environment = this.globals;
 
   constructor() {
@@ -22,6 +23,7 @@ class Interpreter {
         this.execute(statement);
       }
     } catch (error) {
+      // console.log(error)
       if(error instanceof RuntimeError) {
         Lox.runtimeError(error);
       }
@@ -120,7 +122,7 @@ class Interpreter {
     stmt.accept(this);
   }
 
-  private executeBlock(statements: Stmt[], environment: Environment) {
+  executeBlock(statements: Stmt[], environment: Environment) {
     let previous = this.environment;
 
     try {
@@ -140,6 +142,11 @@ class Interpreter {
 
   visitExpressionStmt(stmt: Expression) {
     this.evaluate(stmt.expression);
+  }
+
+  visitFunctionStmt(stmt: Function) {
+    const func: LoxFunction = new LoxFunction(stmt);
+    this.environment.define(stmt.name.lexeme, func);
   }
 
   visitIfStmt(stmt: If) {
@@ -221,8 +228,7 @@ class Interpreter {
   visitCallExpr(expr: Call): any {
     let callee = this.evaluate(expr.callee);
     let args = expr.args.map(arg => this.evaluate(arg));
-
-    if(typeof callee !== "function") {
+    if(typeof callee !== "object") {
       throw new RuntimeError(expr.paren, "Can only call functions and classes.");
     }
 
@@ -239,7 +245,7 @@ class Interpreter {
 class Callable implements LoxCallable {
   private fn;
   private _arity: number;
-  constructor(arity: any, fn: Function)  {
+  constructor(arity: any, fn: any)  {
     this._arity = arity;
     this.fn = fn;
   }

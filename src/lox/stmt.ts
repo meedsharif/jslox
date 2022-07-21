@@ -30,6 +30,22 @@ class Expression extends Stmt {
   }
 }
 
+class Function extends Stmt {
+  public name: Token;
+  public params: Token[];
+  public body: Stmt[];
+  constructor (name: Token, params: Token[], body: Stmt[]) {
+    super()
+    this.name = name;
+    this.params = params;
+    this.body = body;
+  }
+
+  accept (visitor: any) {
+    return visitor.visitFunctionStmt(this)
+  }
+}
+
 class If extends Stmt {
   public condition: Expr;
   public thenBranch: Stmt;
@@ -89,6 +105,7 @@ class While extends Stmt {
 export {
   Block,
   Expression,
+  Function,
   If,
   Print,
   Var,

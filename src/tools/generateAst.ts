@@ -8,6 +8,7 @@ const mapTypes: Record<string, string> = {
   Stmt: `Stmt`,
   'List<Expr>': `Expr[]`,
   'List<Stmt>': `Stmt[]`,
+  'List<Token>': `Token[]`,
   Object: 'any',
 }
 
@@ -106,6 +107,7 @@ async function main() {
   defineAst(outputDir, 'Stmt', {
     Block: 'List<Stmt> statements',
     Expression: "Expr expression",
+    Function: "Token name, List<Token> params, List<Stmt> body",
     If: "Expr condition, Stmt thenBranch, Stmt elseBranch",
     Print: "Expr expression",
     Var: "Token name, Expr initializer",

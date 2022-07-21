@@ -1,6 +1,6 @@
 import { Assign, Binary, Call, Expr, Grouping, Literal, Logical, Unary, Variable } from "./expr";
 import Lox from "./lox";
-import { Block, Expression, If, Print, Stmt, Var, While } from "./stmt";
+import { Block, Expression, Function, If, Print, Stmt, Var, While } from "./stmt";
 import { Token } from "./token";
 import TokenType from "./tokenType";
 
@@ -143,6 +143,27 @@ class Parser {
     return new Expression(expr);
   }
 
+  private func(kind: string): Function {
+    let name = this.consume(TokenType.IDENTIFIER, "Expect " + kind + "name.");
+    this.consume(TokenType.LEFT_PAREN, "Expect '(' after " + kind + " name.");
+    let parameters = new Array<Token>();
+    if(!this.check(TokenType.RIGHT_PAREN)) {
+      do {
+        if(parameters.length >= 8) {
+          this.error(this.peek(), "Cannot have more than 8 parameters.");
+        }
+        parameters.push(this.consume(TokenType.IDENTIFIER, "Expect parameter name."));
+      } while(this.match(TokenType.COMMA));
+    }
+
+    this.consume(TokenType.RIGHT_PAREN, "Expect ')' after parameters.");
+
+    this.consume(TokenType.LEFT_BRACE, "Expect '{' before " + kind + " body.");
+
+    let body = this.block();
+    return new Function(name, parameters, body);
+  }
+
   private block() {
     let statements = new Array<any>();
 
@@ -199,6 +220,10 @@ class Parser {
 
   private declaration(): Stmt | void {
       try {
+        if(this.match(TokenType.FUN)) {
+          return this.func("function");
+        }
+
         if (this.match(TokenType.VAR)) {
           return this.varDeclaration();
         }
